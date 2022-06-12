@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
 <script src="https://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
-
+<script src="../config.js"></script>
 <script>
   // Connecting to ROS
   // -----------------
@@ -36,7 +36,7 @@
   });
 
   // Create a connection to the rosbridge WebSocket server.
-  ros.connect('ws://localhost:9090');
+  ros.connect((typeof config !== 'undefined' && config.WS_BASE_URL) || 'ws://localhost:9090');
 
   // Create a Service client with details of the service's name and service type.
   var addTwoInts = new ROSLIB.Service({

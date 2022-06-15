@@ -12,9 +12,11 @@ client = roslibpy.Ros(host=WS_HOST, port=int(WS_PORT))
 client.run()
 talker = roslibpy.Topic(client, '/'+TOPIC_NAME, 'std_msgs/String')
 
+i = 1
 while client.is_connected:
-    talker.publish(roslibpy.Message({'data': DATA_MSG}))
+    talker.publish(roslibpy.Message({'data': DATA_MSG+' '+str(i)}))
     print('Sending message...')
+    i = i + 1
     time.sleep(int(TIME_PERIOD))
 
 talker.unadvertise()

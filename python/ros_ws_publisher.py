@@ -15,7 +15,7 @@ talker = roslibpy.Topic(client, '/'+TOPIC_NAME, 'std_msgs/String')
 while client.is_connected:
     talker.publish(roslibpy.Message({'data': DATA_MSG}))
     print('Sending message...')
-    time.sleep(TIME_PERIOD)
+    time.sleep(int(TIME_PERIOD))
 
 talker.unadvertise()
 client.terminate()

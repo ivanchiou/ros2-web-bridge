@@ -8,7 +8,7 @@ TOPIC_NAME = os.getenv('TOPIC_NAME', 'example_topic')
 TIME_PERIOD = os.getenv('TIME_PERIOD', '1')
 DATA_MSG = os.getenv('DATA_MSG', 'Hello World!')
 
-client = roslibpy.Ros(host=WS_HOST, port=WS_PORT)
+client = roslibpy.Ros(host=WS_HOST, port=int(WS_PORT))
 client.run()
 talker = roslibpy.Topic(client, '/'+TOPIC_NAME, 'std_msgs/String')
 

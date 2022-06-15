@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ros2-web-bridge-client-deployment
+  labels:
+    app: ros2-web-bridge-client
+  annotations:
+    k8s.v1.cni.cncf.io/networks: my-network
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ros2-web-bridge-client
+  template:
+    metadata:
+      labels:
+        app: ros2-web-bridge-client
+      annotations:
+        k8s.v1.cni.cncf.io/networks: my-network
+    spec:
+      containers:
+      - name: web-bridge-client
+        image: ros:foxy
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - NET_ADMIN
+        ports:
+          - containerPort: 3000
+        volumeMounts:
+          - name: ros2-web-bridge-client-config
+            mountPath: /config.js
+            subPath: config.js
+        command: ["/bin/bash", "-c"]
+        args: ["source /opt/ros/foxy/setup.bash && apt-get update && apt-get install -y curl wget git && curl -s https://deb.nodesource.com/setup_18.x | sudo bash && apt-get install -y nodejs yarn && git clone https://github.com/ivanchiou/ros2-web-bridge.git && cd ros2-web-bridge && npm install && cd examples && cp -f /config.js config.js && node index.js"]
+      volumes:
+        - name: ros2-web-bridge-client-config
+          configMap:
+            name: ros2-web-bridge-client-config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata: 
+  name: ros2-web-bridge-client-service
+spec:
+  ports: 
+    - name: express
+      port: 80
+      targetPort: 3000
+      protocol: TCP
+  selector: 
+    app: ros2-web-bridge-client
+  type: LoadBalancer

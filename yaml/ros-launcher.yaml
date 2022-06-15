@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ros-paia-publisher-deployment
+  labels:
+    app: ros-paia-publisher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ros-paia-publisher
+  template:
+    metadata:
+      labels:
+        app: ros-paia-publisher
+      annotations:
+        k8s.v1.cni.cncf.io/networks: my-network
+    spec:
+      containers:
+      - name: paia-publisher
+        image: ros:foxy
+        command: ["/bin/bash", "-c"]
+        args: ["apt-get update && apt-get install -y ros-foxy-rmw-cyclonedds-cpp ros-foxy-demo-nodes-cpp ros-foxy-demo-nodes-py && source /opt/ros/foxy/setup.bash && apt-get install -y curl wget git python3-pip && curl -s https://deb.nodesource.com/setup_18.x | sudo bash && apt-get install -y nodejs yarn && git clone -b ivan https://github.com/PAIA-Playful-AI-Arena/ROS_Tutorial.git && rm -rf /var/lib/apt/lists/*  && cd ROS_Tutorial && source scripts/build_paia_node_py.bash && source scripts/run_paia_node_publish.bash"]
+        envFrom:
+        - configMapRef:
+            name: ros-launcher-config
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ros-paia-subscriber-deployment
+  labels:
+    app: ros-paia-subscriber
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ros-paia-subscriber
+  template:
+    metadata:
+      labels:
+        app: ros-paia-subscriber
+      annotations:
+        k8s.v1.cni.cncf.io/networks: my-network
+    spec:
+      containers:
+      - name: paia-subscriber
+        image: ros:foxy
+        command: ["/bin/bash", "-c"]
+        args: ["apt-get update && apt-get install -y ros-foxy-rmw-cyclonedds-cpp ros-foxy-demo-nodes-cpp ros-foxy-demo-nodes-py && source /opt/ros/foxy/setup.bash && apt-get install -y curl wget git python3-pip && curl -s https://deb.nodesource.com/setup_18.x | sudo bash && apt-get install -y nodejs yarn && git clone -b ivan https://github.com/PAIA-Playful-AI-Arena/ROS_Tutorial.git && rm -rf /var/lib/apt/lists/*  && cd ROS_Tutorial && source scripts/build_paia_node_py.bash && source scripts/run_paia_node_subscribe.bash"]
+        envFrom:
+        - configMapRef:
+            name: ros-launcher-config

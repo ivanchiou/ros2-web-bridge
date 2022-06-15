@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ros-dds-deployment
+  labels:
+    app: ros-dds
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ros-dds
+  template:
+    metadata:
+      labels:
+        app: ros-dds
+      annotations:
+        k8s.v1.cni.cncf.io/networks: my-network
+    spec:
+      containers:
+      - name: dds 
+        image: ros:foxy
+        ports:
+          - containerPort: 11811  
+        command: ["/bin/bash", "-c"]
+        args: ["apt-get update && apt-get install -y ros-foxy-rmw-cyclonedds-cpp ros-foxy-demo-nodes-cpp ros-foxy-demo-nodes-py && sudo apt update && RTI_NC_LICENSE_ACCEPTED=yes apt install -q -y rti-connext-dds-6.0.1 && cd /opt/rti.com/rti_connext_dds-6.0.1/resource/scripts && source ./rtisetenv_x64Linux4gcc7.3.0.bash; cd - && source /opt/ros/foxy/setup.bash && rm -rf /var/lib/apt/lists/* && fastdds discovery --server-id 0"]
+
+---
+
+apiVersion: v1
+kind: Service
+metadata: 
+  name: ros-dds-service
+spec:
+  ports: 
+    - port: 11811
+      protocol: TCP
+  selector: 
+    name: ros-dds
+  type: LoadBalancer

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ros-talker-deployment
+  labels:
+    app: ros-talker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ros-talker
+  template:
+    metadata:
+      labels:
+        app: ros-talker
+      annotations:
+        k8s.v1.cni.cncf.io/networks: my-network
+    spec:
+      containers:
+      - name: talker 
+        image: ros:foxy
+        command: ["/bin/bash", "-c"]
+        args: ["source /opt/ros/foxy/setup.bash && apt-get update && apt-get install -y ros-foxy-rmw-cyclonedds-cpp ros-foxy-demo-nodes-cpp ros-foxy-demo-nodes-py && rm -rf /var/lib/apt/lists/* && ros2 run demo_nodes_cpp talker"]

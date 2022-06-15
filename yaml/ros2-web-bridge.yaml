@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ros2-web-bridge-deployment
+  labels:
+    app: ros2-web-bridge
+  annotations:
+    k8s.v1.cni.cncf.io/networks: my-network
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ros2-web-bridge
+  template:
+    metadata:
+      labels:
+        app: ros2-web-bridge
+      annotations:
+        k8s.v1.cni.cncf.io/networks: my-network
+    spec:
+      containers:
+      - name: web-bridge
+        image: ros:foxy
+        ports:
+          - containerPort: 9090        
+        command: ["/bin/bash", "-c"]
+        args: ["source /opt/ros/foxy/setup.bash && apt-get update && apt-get install -y curl wget git && curl -s https://deb.nodesource.com/setup_18.x | sudo bash && apt-get install -y nodejs yarn && git clone https://github.com/RobotWebTools/ros2-web-bridge.git && cd ros2-web-bridge && npm install && cd bin && node rosbridge.js"]
+
+---
+
+apiVersion: v1
+kind: Service
+metadata: 
+  name: ros2-web-bridge-service
+spec:
+  ports: 
+    - name: socket
+      port: 9090
+      targetPort: 9090
+      protocol: TCP
+  selector: 
+    app: ros2-web-bridge
+  type: LoadBalancer

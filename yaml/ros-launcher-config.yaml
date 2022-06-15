@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ros-launcher-config
+data:
+  topic_name: example_topic_new
+  time_period: "20"

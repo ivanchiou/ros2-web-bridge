@@ -24,7 +24,7 @@ class NavigationPublisher(Node):
         client = roslibpy.Ros(host=WS_HOST, port=int(WS_PORT))
         client.run()
 
-        pub = roslibpy.Topic(client, '/'+TOPIC_NAME_STRING, MESSAGE_FORMAT_STRING, queue_size=10)    
+        pub = roslibpy.Topic(client, '/'+TOPIC_NAME_STRING, MESSAGE_FORMAT_STRING)    
         #pub.subscribe(lambda message: print('Heard publisher: {}'.format(message['data'])))
 
         x = -20.0

@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import roslibpy
 import os
+import json
 from datetime import datetime
 import rclpy
 from rclpy.node import Node
@@ -23,7 +24,7 @@ class NavigationSubscriber(Node):
     def on_message(self, msg):
         print('Heard publisher: {}'.format(msg['data']))
 
-        data = msg['data']
+        data = json.loads(msg['data'])
         message = data['message']
 
         self.publisher = self.create_publisher(

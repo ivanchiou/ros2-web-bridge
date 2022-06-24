@@ -43,7 +43,10 @@ class NavigationSubscriber(Node):
         pose = message['pose']
         position = pose['position']
         msg.pose = Pose()
-        msg.pose.position = Point(position['x'], position['y'], position['z'])
+        msg.pose.position = Point()
+        msg.pose.position.x = position['x']
+        msg.pose.position.y = position['y']
+        msg.pose.position.z = position['z']
 
         self.publisher.publish(msg)
 

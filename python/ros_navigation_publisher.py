@@ -25,7 +25,7 @@ class NavigationPublisher(Node):
         client.run()
 
         pub = roslibpy.Topic(client, '/'+TOPIC_NAME_STRING, MESSAGE_FORMAT_STRING, queue_size=10)    
-        pub.subscribe(lambda message: print('Heard publisher: {}'.format(message['data'])))
+        #pub.subscribe(lambda message: print('Heard publisher: {}'.format(message['data'])))
 
         x = -20.0
         y = -20.0

@@ -5,7 +5,8 @@ import json
 from datetime import datetime
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import PoseStamped
+from std_msgs.msg import Header
+from geometry_msgs.msg import PoseStamped, Point, Pose
 
 WS_HOST = os.getenv('WS_HOST', 'localhost')
 WS_PORT = os.getenv('WS_PORT', '9090')
@@ -32,16 +33,18 @@ class NavigationSubscriber(Node):
             '/'+data['topic_name'],
             1)
 
+        print(str(message))
+
         msg = PoseStamped()
         header = message['header']
+        msg.header = Header()
         msg.header.seq = header['seq']
         msg.header.stamp = header['stamp']
         msg.header.frame_id = header['frame_id']
         pose = message['pose']
         position = pose['position']
-        msg.pose.position.x = position['x']
-        msg.pose.position.y = position['y']
-        msg.pose.position.z = position['z']
+        msg.pose = Pose()
+        msg.pose.position = Point(position['x'], position['y'], position['z'])
 
         self.publisher.publish(msg)
 

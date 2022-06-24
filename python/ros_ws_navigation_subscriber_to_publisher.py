@@ -38,7 +38,6 @@ class NavigationSubscriber(Node):
         msg = PoseStamped()
         header = message['header']
         msg.header = Header()
-        msg.header.seq = header['seq']
         msg.header.stamp = header['stamp']
         msg.header.frame_id = header['frame_id']
         pose = message['pose']

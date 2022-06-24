@@ -32,8 +32,8 @@ class NavigationPublisher(Node):
             msg = PointStamped()
             msg.header.stamp = self.get_clock().now().to_msg()
             msg.header.frame_id = "navigation"
-            msg.point.x = x
-            msg.point.y = y
+            msg.point.x = float(x)
+            msg.point.y = float(y)
             msg.point.z = 0.
             msg_dict = { 
                 'message': {

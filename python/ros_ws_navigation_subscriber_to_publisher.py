@@ -6,7 +6,7 @@ from datetime import datetime
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Header
-from geometry_msgs.msg import PoseStamped, Point, Pose
+from geometry_msgs.msg import PointStamped, Point, Pose
 
 WS_HOST = os.getenv('WS_HOST', 'localhost')
 WS_PORT = os.getenv('WS_PORT', '9090')
@@ -29,24 +29,22 @@ class NavigationSubscriber(Node):
         message = data['message']
 
         self.publisher = self.create_publisher(
-            PoseStamped,
+            PointStamped,
             '/'+data['topic_name'],
             1)
 
         print(str(message))
 
-        msg = PoseStamped()
+        msg = PointStamped()
         header = message['header']
         msg.header = Header()
         msg.header.stamp = self.get_clock().now().to_msg()
         msg.header.frame_id = header['frame_id']
-        pose = message['pose']
-        position = pose['position']
-        msg.pose = Pose()
-        msg.pose.position = Point()
-        msg.pose.position.x = position['x']
-        msg.pose.position.y = position['y']
-        msg.pose.position.z = position['z']
+        point = message['point']
+        msg.point = Point()
+        msg.point.x = point['x']
+        msg.point.y = point['y']
+        msg.point.z = point['z']
 
         self.publisher.publish(msg)
 

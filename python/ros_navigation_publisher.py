@@ -7,14 +7,14 @@ import os
 from datetime import datetime
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PointStamped
 from std_msgs.msg import String
 
 WS_HOST = os.getenv('WS_HOST', 'localhost')
 WS_PORT = os.getenv('WS_PORT', '9090')
 TOPIC_NAME = os.getenv('TOPIC_NAME', 'clicked_point')
 TOPIC_NAME_STRING = os.getenv('TOPIC_NAME_STRING', 'clicked_point_string')
-MESSAGE_FORMAT = os.getenv('MESSAGE_FORMAT', 'geometry_msgs/PoseStamped')
+MESSAGE_FORMAT = os.getenv('MESSAGE_FORMAT', 'geometry_msgs/PointStamped')
 MESSAGE_FORMAT_STRING = os.getenv('MESSAGE_FORMAT_STRING', 'std_msgs/String')
 TIME_PERIOD = os.getenv('TIME_PERIOD', '60')
 
@@ -30,12 +30,12 @@ class NavigationPublisher(Node):
         x = -20.0
         y = -20.0
 
-        msg = PoseStamped()
+        msg = PointStamped()
         msg.header.stamp = self.get_clock().now().to_msg()
         msg.header.frame_id = "navigation"
-        msg.pose.position.x = x
-        msg.pose.position.y = y
-        msg.pose.position.z = 0.
+        msg.point.x = x
+        msg.point.y = y
+        msg.point.z = 0.
 
         msg_dict = { 
             'message': {
@@ -47,12 +47,10 @@ class NavigationPublisher(Node):
                     },
                     'frame_id': "navigation"
                 },
-                'pose': {
-                    'position': {
-                        'x': x,
-                        'y': y,
-                        'z': 0.
-                    }
+                'point': {
+                    'x': x,
+                    'y': y,
+                    'z': 0.
                 }
             },
             'message_type': MESSAGE_FORMAT,
@@ -61,7 +59,7 @@ class NavigationPublisher(Node):
 
         '''
         self.subscription = self.create_subscription(
-            PoseStamped,
+            PointStamped,
             '/'+TOPIC_NAME_STRING,
             self.on_message,
             10)

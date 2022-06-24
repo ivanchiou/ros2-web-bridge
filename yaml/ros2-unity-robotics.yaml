@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ros2-unity-robotics-deployment
+  labels:
+    app: ros2-unity-robotics
+  annotations:
+    k8s.v1.cni.cncf.io/networks: my-network
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ros2-unity-robotics
+  template:
+    metadata:
+      labels:
+        app: ros2-unity-robotics
+      annotations:
+        k8s.v1.cni.cncf.io/networks: my-network
+    spec:
+      containers:
+      - name: unity-robotics
+        image: digitaltwinimages.azurecr.io/robotics-nav2-slam:latest
+        ports:
+          - containerPort: 80
+            name: web
+          - containerPort: 10000
+            name: ros
+        imagePullPolicy: "IfNotPresent"
+        volumeMounts:
+          - mountPath: /dev/shm
+            name: cache-volume
+        envFrom:
+        - configMapRef:
+            name: ros2-web-bridge-client-config
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: digital-twin-secret
+      volumes:
+        - name: ros2-web-bridge-client-config
+          configMap:
+            name: ros2-web-bridge-client-config
+        - emptyDir:
+            medium: Memory
+            sizeLimit: 1024Mi
+          name: cache-volume
+        
+---
+
+apiVersion: v1
+kind: Service
+metadata: 
+  name: ros2-unity-robotics-service
+spec:
+  ports:
+    - name: web
+      port: 80
+    - name: ros
+      port: 10000
+  selector: 
+    app: ros2-unity-robotics
+  type: LoadBalancer

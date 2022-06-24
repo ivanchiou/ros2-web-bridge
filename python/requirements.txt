@@ -1,1 +1,3 @@
 roslibpy
+rospkg
+catkin-tools

@@ -4,24 +4,15 @@ metadata:
   name: my-network
 spec:
   config: '{
-    "cniVersion": "0.3.0",
-    "name": "my-network",
-    "type": "macvlan",
-    "master": "eth0",
-    "mode": "bridge",
-    "isDefaultgateway": true,
-    "ipam": {
-      "type": "host-local",
-      "ranges": [
-         [ {
-           "subnet": "192.168.0.0/16",
-           "rangeStart": "192.168.1.160",
-           "rangeEnd": "192.168.1.180",
-           "routes": [
-              { "dst": "0.0.0.0/0" }
-           ],
-           "gateway": "192.168.1.1"
-         } ]
-      ]
-    }
-  }'
+      "cniVersion": "0.3.0",
+      "type": "ipvlan",
+      "master": "eth0",
+      "mode": "l2",
+      "ipam": {
+        "type": "host-local",
+        "subnet": "192.168.0.0/16",
+        "rangeStart": "192.168.1.160",
+        "rangeEnd": "192.168.1.180",
+        "gateway": "192.168.1.1"
+      }
+    }'

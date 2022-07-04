@@ -32,9 +32,11 @@ spec:
           value: Asia/Taipei
         - name: INTERFACE
           value: eth0
-        image: linuxserver/openvpn-as
+        image: ubuntu:20.04
         imagePullPolicy: IfNotPresent
         name: openvpn-server
+        command: ["/bin/bash", "-c"]
+        args: ['apt update && apt -y install ca-certificates wget net-tools gnupg systemctl && wget -qO - https://as-repository.openvpn.net/as-repo-public.gpg | apt-key add - && echo "deb http://as-repository.openvpn.net/as/debian focal main">/etc/apt/sources.list.d/openvpn-as-repo.list && apt update && apt -y install openvpn-as && tail -f /dev/null']
         ports:
         - containerPort: 1194
           name: openvpn-server

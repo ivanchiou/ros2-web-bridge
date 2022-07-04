@@ -20,23 +20,24 @@ spec:
     spec:
       containers:
       - name: ws-navigation-subscriber
-        image: ros:foxy
+        image: digitaltwinimages.azurecr.io/digitaltwin-bridge
         securityContext:
           privileged: true
           capabilities:
             add:
             - NET_ADMIN
         ports:
-          - containerPort: 3000
+          - containerPort: 9191
         volumeMounts:
           - name: ros2-web-bridge-client-config
             mountPath: /config.js
             subPath: config.js
-        command: ["/bin/bash", "-c"]
-        args: ["source /opt/ros/foxy/setup.bash && apt-get update && apt-get install -y curl wget git python3-pip && curl -s https://deb.nodesource.com/setup_18.x | sudo bash && apt-get install -y nodejs yarn && git clone https://github.com/ivanchiou/ros2-web-bridge.git && cd ros2-web-bridge && cd python && pip install -r requirements.txt && python3 ros_ws_navigation_subscriber_to_publisher.py"]
         envFrom:
         - configMapRef:
             name: ros2-web-bridge-client-config
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: digital-twin-secret
       volumes:
         - name: ros2-web-bridge-client-config
           configMap:
@@ -51,8 +52,8 @@ metadata:
 spec:
   ports: 
     - name: express
-      port: 80
-      targetPort: 3000
+      port: 9191
+      targetPort: 9191
       protocol: TCP
   selector: 
     app: ros2-ws-navigation-subscriber

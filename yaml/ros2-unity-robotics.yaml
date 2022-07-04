@@ -26,6 +26,8 @@ spec:
             name: web
           - containerPort: 10000
             name: ros
+          - containerPort: 5900
+            name: viewer
         imagePullPolicy: "IfNotPresent"
         volumeMounts:
           - mountPath: /dev/shm
@@ -57,6 +59,9 @@ spec:
       port: 80
     - name: ros
       port: 10000
+    - name: viewer
+      protocol: TCP
+      port: 5900
   selector: 
     app: ros2-unity-robotics
   type: LoadBalancer

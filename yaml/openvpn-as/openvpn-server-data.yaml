@@ -4,7 +4,6 @@ metadata:
   labels:
     app: openvpn-server
   name: openvpn-server-data-pv-claim
-  namespace: openvpn
 spec:
   accessModes:
   - ReadWriteOnce
